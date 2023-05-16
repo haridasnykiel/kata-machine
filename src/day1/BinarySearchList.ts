@@ -5,11 +5,12 @@ export default function bs_list(haystack: number[], needle: number): boolean {
 
     do {
         let mid = Math.floor(lo + (hi - lo) / 2);
+        let val = haystack[mid];
 
-        if(haystack[mid] === needle) {
+        if(val === needle) {
             return true;
         }
-        else if(haystack[mid] < needle) {
+        else if(val < needle) {
             lo = mid + 1;
         } else {
             hi = mid;
