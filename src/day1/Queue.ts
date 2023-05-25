@@ -14,43 +14,30 @@ export default class Queue<T> {
 
     enqueue(item: T): void {
         let node: Node<T> = {value: item};
+        this.length += 1;
 
-        if(this.head === undefined) {
-            this.head = node;
-        }
-
-        if(this.tail === undefined) {
-            this.tail = node;
-            this.length += 1;
+        if(!this.tail || !this.head) {
+            this.tail = this.head = node;
             return;
         }
 
         this.tail.next = node;
-
         this.tail = node;
-        this.length += 1;
     }
     deque(): T | undefined {
-        if(this.length <= 0) {
+        if(!this.head) {
             return undefined;
         }
 
-        if(this.head === undefined) {
-            return undefined;
-        }
-
-        let result = this.head;
-        let nextNode = this.head.next;
-        this.head.next = undefined;
-        this.head = nextNode;
         this.length -= 1;
-        return result.value;
+
+        let head = this.head;
+        this.head = this.head.next;
+        head.next = undefined;
+        
+        return head.value;
     }
     peek(): T | undefined {
-        if(this.head === undefined) {
-            return undefined;
-        }
-
-        return this.head.value;
+        return this.head?.value;
     }
 }
