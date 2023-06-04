@@ -20,24 +20,19 @@ export default class ArrayList<T> {
         this.length++;
     }
     insertAt(item: T, idx: number): void {
-        if(idx < this.length) {
-            this.growArrayIfReachedCapacity(this.length + 1);
-        } else {
-            this.growArrayIfReachedCapacity(idx);
-        }
+        this.growArrayIfReachedCapacity(this.length + 1);
         
-        for (let i = this.length + 1; i >= idx; i--) {
-            const element = this.arr[i];
-            const nextElement = this.arr[i + 1];
-
-            
+        for (let i = this.length; i > idx; i--) {
+            this.arr[i] = this.arr[i - 1];
         }
 
+        this.arr[idx] = item;
+        this.length++;
     }
     append(item: T): void {
+        this.growArrayIfReachedCapacity(this.length + 1);
         this.arr[this.length] = item;
         this.length++;
-        this.growArrayIfReachedCapacity(this.length);
     }
     remove(item: T): T | undefined {
         let indexOfItem = undefined;
@@ -81,7 +76,12 @@ export default class ArrayList<T> {
         if(length > this.capacity) {
             this.capacity = length;
             let newArray = new Array<T>(this.capacity);
-            this.arr = newArray.concat(this.arr);
+            for (let i = 0; i < this.arr.length; i++) {
+                const item = this.arr[i];
+                newArray[i] = item;
+            }
+
+            this.arr = newArray;
         }
     }
 }

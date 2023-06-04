@@ -30,5 +30,11 @@ export function test_list(list: List<number>): void {
     list.append(10);
     list.append(13);
 
+    list.insertAt(90, 2);
+
+    expect(list.get(2)).toEqual(90);
+
+    expect(list.length).toEqual(6);
+
     
 }
