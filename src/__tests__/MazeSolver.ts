@@ -29,8 +29,9 @@ test("maze solver", function () {
     ];
 
     const visited: boolean[][] = [];
+    const path: Point[] = [];
     // there is only one path through
-    const result = maze_solver(maze, "x", { x: 10, y: 0 }, { x: 1, y: 5 }, visited);
+    const result = maze_solver(maze, "x", { x: 10, y: 0 }, { x: 1, y: 5 }, visited, path);
     expect(drawPath(maze, result)).toEqual(drawPath(maze, mazeResult));
 });
 
