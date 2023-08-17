@@ -31,13 +31,34 @@ function partition(arr: number[], lp: number, rp: number) : number {
     return lp;
 }
 
+function partitionv2(arr: number[], lo: number, hi: number) {
+    let pivot = arr[hi];
+     
+    let idx = lo - 1;
+
+    for (let index = lo; index < hi; index++) {
+        if(arr[index] <= pivot) {
+            idx++;
+            let tmp = arr[index];
+            arr[index] = arr[idx];
+            arr[idx] = tmp;
+        }
+    }
+
+    idx++;
+    arr[hi] = arr[idx];
+    arr[idx] = pivot;
+
+    return idx;
+}
+
 function qsort(arr: number[], lp: number, rp: number)  
 {
     if(rp <= lp) {
         return;
     }
 
-    var sortedIndex = partition(arr, lp, rp);
+    var sortedIndex = partitionv2(arr, lp, rp);
 
     qsort(arr, 0, sortedIndex - 1);
     qsort(arr, sortedIndex + 1, rp); 
