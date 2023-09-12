@@ -16,12 +16,13 @@ export default class SinglyLinkedList<T> {
     prepend(item: T): void {
         let node: Node<T> = { value: item };
 
+        this.length += 1;
+        
         if(this.head !== undefined) {
             node.next = this.head;
         }
  
         this.head = node;
-        this.length += 1;
     }
     insertAt(item: T, idx: number): void {
         let node: Node<T> = { value: item };
@@ -57,6 +58,8 @@ export default class SinglyLinkedList<T> {
     append(item: T): void {
         let node: Node<T> = { value: item };
 
+        this.length += 1;
+
         if(this.tail !== undefined) {
             this.tail.next = node;
         }
@@ -66,7 +69,6 @@ export default class SinglyLinkedList<T> {
         }
  
         this.tail = node;
-        this.length += 1;
     }
     remove(item: T): T | undefined {
         if(this.head === undefined && this.tail === undefined) {
