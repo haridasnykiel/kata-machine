@@ -71,11 +71,6 @@ export default class DoublyLinkedList<T> {
     }
 
     remove(item: T): T | undefined {
-        // change the next link of the previous item to point to the removed items next node. 
-        // Do the same for the removed nodes next item except so change the previous node to point to its previous node. 
-        // Is the item is not found return undefined.
-        // If the item is found and all the operations above are complete and the item is found return the item. 
-        // If there is nothing in the list return undefined
 
         let curr = this.head;
         for (let i = 0; curr && i < this.length; i++) {
@@ -120,6 +115,14 @@ export default class DoublyLinkedList<T> {
 
         if(curr.next) {
             curr.next.prev = curr.prev;
+        }
+
+        if(curr === this.head) {
+            this.head = curr.next;
+        }
+
+        if(curr === this.tail) {
+            this.tail = curr.prev;
         }
 
         curr.next = curr.prev = undefined;
