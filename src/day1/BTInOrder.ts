@@ -1,15 +1,17 @@
-export default function in_order_search(head: BinaryNode<number> | null): number[] {
-    let numbers: number[] = [];
-    
-    if(!head) {
-        return numbers;
+function walk(curr: BinaryNode<number> | null, nums: number[]): number[] {
+    if(!curr) {
+        return nums;
     }
 
-    numbers = numbers.concat(in_order_search(head.left));
+    walk(curr.left, nums);
 
-    numbers.push(head.value);
+    nums.push(curr.value);
 
-    numbers = numbers.concat(in_order_search(head.right));
+    walk(curr.right, nums);
 
-    return numbers;
+    return nums;
+}
+
+export default function in_order_search(head: BinaryNode<number>): number[] {
+    return walk(head, []);
 }
