@@ -42,19 +42,18 @@ export default class MinHeap {
             return;
         }
         
-        const rightChildVal = this.data[rightChildIdx];
         const leftChildVal = this.data[leftChildIdx];
         const currVal = this.data[idx];
+        let rightChildVal :number = -1;
         
-        if(currVal < leftChildVal && currVal < rightChildVal ||
-            (rightChildVal === -1 && leftChildVal === -1)) {
-            return;
+        if(rightChildIdx < this.length) {
+            rightChildVal = this.data[rightChildIdx];
         }
         
-        if(leftChildVal < rightChildVal) {
+        if((leftChildVal < rightChildVal && leftChildVal < currVal) || rightChildVal === -1) {
             this.swap(idx, leftChildIdx, currVal, leftChildVal);
             this.bubbleDown(leftChildIdx);
-        } else {
+        } else if(rightChildVal < leftChildVal && rightChildVal < currVal) {
             this.swap(idx, rightChildIdx, currVal, rightChildVal);
             this.bubbleDown(rightChildIdx);
         }
