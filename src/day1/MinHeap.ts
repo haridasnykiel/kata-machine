@@ -6,7 +6,7 @@ export default class MinHeap {
         this.data = [];
         this.length = 0;
     }
-
+            
     insert(value: number): void {
         this.length++;
         
