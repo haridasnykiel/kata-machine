@@ -33,6 +33,7 @@ export default class Trie {
                 };
                 currNode.children[numVal] = newNode;
                 currNode = newNode;
+                this.length++;
             }
         }
         currNode.isWord = true;
@@ -42,13 +43,40 @@ export default class Trie {
 
     }
 
-    find(partial: string, index: number, currNode: TrieNode): string[] {
-        const results: string[] = [];
-        let charVal = partial[index].charCodeAt(0);
-        //currNode.children[part]
-        
+    findWords(partial: string, currNode: TrieNode, words: string[], word: string): string[] {
+        if(!currNode) {
+            return words;
+        }
 
+        for (let index = 0; index < currNode.children.length; index++) {
+            const child = currNode.children[index];
+            if(!child) {
+                continue;
+            }
+            word = word === '' ? partial + child.value : word + child.value;
+            if(child.isWord) {
+                words.push(word);
+            }
+
+            this.findWords(partial, child, words, word);
+        }
+
+        return words;
+    }
+
+    find(partial: string): string[] {        
+        let currNode = this.head;
+        for (let index = 0; index < partial.length; index++) {
+            const charVal = partial[index].charCodeAt(0);
+            let child = currNode.children[charVal];
+
+            if(child) {
+                currNode = child;
+            }
+        }
         
-        return results;
+        const words = this.findWords(partial, currNode, [], "");
+        
+        return words;
     }
 }
