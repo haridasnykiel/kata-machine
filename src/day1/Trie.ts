@@ -18,8 +18,8 @@ export default class Trie {
 
     insert(item: string): void {
         let currNode = this.head;
-        for (let index = 0; index < item.length; index++) {
-            const char = item[index];
+        for (const element of item) {
+            const char = element;
             const numVal = char.charCodeAt(0);
             const child = currNode.children[numVal];
             
@@ -39,8 +39,30 @@ export default class Trie {
         currNode.isWord = true;
     }
 
+    deleteWord(word: string, currNode: TrieNode, parentNode: TrieNode) : void {
+        if(!currNode) {
+            return;
+        }
+        
+        
+    }
+    
     delete(item: string): void {
+        let parentNode: TrieNode = this.head;
+        let currNode: TrieNode = this.head;
+        for (const element of item) {
+            const numVal = element.charCodeAt(0);
+            const child = currNode.children[numVal];
 
+            if (!child) {
+                return;
+            }
+
+            parentNode = currNode;
+            currNode = child;
+        }
+        
+        this.deleteWord(item, currNode, parentNode);
     }
 
     findWords(partial: string, currNode: TrieNode, words: string[], word: string): string[] {
@@ -48,8 +70,8 @@ export default class Trie {
             return words;
         }
 
-        for (let index = 0; index < currNode.children.length; index++) {
-            const child = currNode.children[index];
+        for (const element of currNode.children) {
+            const child = element;
             if(!child) {
                 continue;
             }
@@ -66,8 +88,9 @@ export default class Trie {
 
     find(partial: string): string[] {        
         let currNode = this.head;
-        for (let index = 0; index < partial.length; index++) {
-            const charVal = partial[index].charCodeAt(0);
+        
+        for (const element of partial) {
+            const charVal = element.charCodeAt(0);
             let child = currNode.children[charVal];
 
             if(child) {
