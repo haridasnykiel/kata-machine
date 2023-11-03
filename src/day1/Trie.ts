@@ -1,16 +1,16 @@
 type TrieNode = {
     value: string | null;
+    parent: TrieNode | null;
     children: TrieNode[];
     isWord: boolean;
 }
 export default class Trie {
-    private length: number;
-    private head: TrieNode;
+    private readonly head: TrieNode;
 
     constructor() {
-        this.length = 0;
         this.head = {
             value: null,
+            parent: null,
             children: [],
             isWord: false
         };
@@ -18,37 +18,63 @@ export default class Trie {
 
     insert(item: string): void {
         let currNode = this.head;
+        let parentNode = this.head;
         for (const element of item) {
             const char = element;
             const numVal = char.charCodeAt(0);
             const child = currNode.children[numVal];
             
-            if(child) {
+            if(child?.value) {
                 currNode = child;
+                parentNode = currNode;
             } else {
                 const newNode: TrieNode = { 
                     value: char,
+                    parent: parentNode,
                     children: [],
                     isWord: false
                 };
                 currNode.children[numVal] = newNode;
                 currNode = newNode;
-                this.length++;
+                parentNode = currNode;
             }
         }
         currNode.isWord = true;
     }
 
-    deleteWord(word: string, currNode: TrieNode, parentNode: TrieNode) : void {
+    private deleteWord(word: string, wordIndex: number, currNode: TrieNode) : void {
         if(!currNode) {
             return;
         }
         
+        const hasChild = currNode.children.some(v => v?.value !== null);
         
+        if(hasChild) {
+            currNode.isWord = false;
+            return;
+        }
+        
+        wordIndex--;
+        
+        if(wordIndex < 0) {
+            return;
+        }
+        
+        const val = currNode.value as string;
+        const numVal = val.charCodeAt(0);
+        
+        const parent = currNode.parent as TrieNode;
+
+        parent.children[numVal] = {children: [], parent: currNode.parent, isWord: false, value: null};
+
+        if(parent.isWord) {
+            return;
+        }
+
+        this.deleteWord(word, wordIndex, parent);
     }
     
     delete(item: string): void {
-        let parentNode: TrieNode = this.head;
         let currNode: TrieNode = this.head;
         for (const element of item) {
             const numVal = element.charCodeAt(0);
@@ -57,15 +83,13 @@ export default class Trie {
             if (!child) {
                 return;
             }
-
-            parentNode = currNode;
             currNode = child;
         }
         
-        this.deleteWord(item, currNode, parentNode);
+        this.deleteWord(item, item.length - 1,  currNode);
     }
 
-    findWords(partial: string, currNode: TrieNode, words: string[], word: string): string[] {
+    private findWords(partial: string, currNode: TrieNode, words: string[], word: string): string[] {
         if(!currNode) {
             return words;
         }
