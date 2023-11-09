@@ -2,8 +2,7 @@ export default function bfs(
     graph: WeightedAdjacencyMatrix,
     source: number,
     needle: number): number[] | null {
-    // source is the starting node, needle is what we are looking for. 
-    // Return the path taken to get to the needle.
+        
     const queue: number[] = [source];
     const visited: boolean[] = new Array(graph.length).fill(false);
     const prev: number[] = new Array(graph.length).fill(-1);
