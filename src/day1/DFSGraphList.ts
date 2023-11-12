@@ -29,17 +29,14 @@ function walk(graph: WeightedAdjacencyList, curr: number, needle: number, visite
     path.push(curr);
     const edges = graph[curr];
     
-    let isFound = false
     for (let idx = 0; idx < edges.length; idx++) {
         let edge = edges[idx];
-        isFound = walk(graph, edge.to, needle, visited, path);
-        if(isFound) 
-            break;
+        
+        if(walk(graph, edge.to, needle, visited, path)) 
+            return true;
     }
     
-    if(!isFound) {
-        path.pop();
-    }
+    path.pop();
     
-    return isFound;
+    return false;
 }
