@@ -37,20 +37,18 @@ export default function dijkstra_list(
         curr = previous[curr];
     }
 
-    result = [source].concat(result.reverse());     
-
-    return result; 
+     return [source].concat(result.reverse());     
 }
 
 function getSmallestDistanceUnvisitedEdge(visited: boolean[], distances: number[]): number {
-    let smallestEdge = Infinity;
+    let smallestEdgeIndex = Infinity;
     for (let index = 0; index < visited.length; index++) {
         const isNodeVisited = visited[index];
         const distOfNode = distances[index];
 
-        if(!isNodeVisited && distOfNode < smallestEdge) {
-            smallestEdge = index;   
+        if(!isNodeVisited && distOfNode < smallestEdgeIndex) {
+            smallestEdgeIndex = index;   
         }
     }
-    return smallestEdge;
+    return smallestEdgeIndex;
 }
