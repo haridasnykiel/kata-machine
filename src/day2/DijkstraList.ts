@@ -13,10 +13,6 @@ export default function dijkstra_list(
         const smallestEdgeNotVisited = getSmallestDistanceUnvisitedEdge(visited, distances);
         visited[smallestEdgeNotVisited] = true;
         
-        if(smallestEdgeNotVisited == sink) {
-            break;
-        }
-
         const node = arr[smallestEdgeNotVisited];
         for (let index = 0; index < node.length; index++) {
             let edge = node[index];
