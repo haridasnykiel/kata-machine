@@ -64,15 +64,14 @@ function dijkstra_listv2(
     visited.insert(source);
     
     while (visited.data.length > 0) {
-        const smallestEdgeNotVisited = getSmallestDistanceUnvisitedEdge(visited, distances);
-        visited[smallestEdgeNotVisited] = true;
+        const smallestEdgeNotVisited = visited.delete();
 
         const node = arr[smallestEdgeNotVisited];
         for (let index = 0; index < node.length; index++) {
             let edge = node[index];
-            if(visited[edge.to]) continue;
             let dist = distances[smallestEdgeNotVisited] + edge.weight;
 
+            visited.insert(edge.to);
             if(dist < distances[edge.to]) {
                 previous[edge.to] = smallestEdgeNotVisited;
                 distances[edge.to] = dist;
