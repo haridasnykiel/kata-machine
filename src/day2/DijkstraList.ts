@@ -4,6 +4,13 @@ export default function dijkstra_list(
     source: number,
     sink: number,
     arr: WeightedAdjacencyList): number[] {
+    return dijkstra_listv2(source, sink, arr);
+}
+
+function dijkstra_listv1(
+    source: number,
+    sink: number,
+    arr: WeightedAdjacencyList): number[] {
 
     const visited: boolean[] = new Array(arr.length).fill(false);
     const previous: number[] = new Array(arr.length).fill(-1);
@@ -14,7 +21,7 @@ export default function dijkstra_list(
     while (visited.includes(false)) {
         const smallestEdgeNotVisited = getSmallestDistanceUnvisitedEdge(visited, distances);
         visited[smallestEdgeNotVisited] = true;
-        
+
         const node = arr[smallestEdgeNotVisited];
         for (let index = 0; index < node.length; index++) {
             let edge = node[index];
@@ -23,8 +30,8 @@ export default function dijkstra_list(
 
             if(dist < distances[edge.to]) {
                 previous[edge.to] = smallestEdgeNotVisited;
-                distances[edge.to] = dist;   
-            }       
+                distances[edge.to] = dist;
+            }
         }
     }
     let result: number[] = [];
@@ -35,7 +42,7 @@ export default function dijkstra_list(
         curr = previous[curr];
     }
 
-     return [source].concat(result.reverse());     
+    return [source].concat(result.reverse());
 }
 
 function getSmallestDistanceUnvisitedEdge(visited: boolean[], distances: number[]): number {
@@ -50,7 +57,7 @@ function getSmallestDistanceUnvisitedEdge(visited: boolean[], distances: number[
     }
     return smallestEdgeIndex;
 }
-
+//Need to keep track of the vertices that I have come from and the total weight from that wertice. Have a look at this: https://stackoverflow.com/questions/41965431/dijkstra-algorithm-min-heap-as-a-min-priority-queue
 function dijkstra_listv2(
     source: number,
     sink: number,
@@ -61,9 +68,9 @@ function dijkstra_listv2(
     const distances: number[] = new Array(arr.length).fill(Infinity);
 
     distances[source] = 0;
-    visited.insert(source);
+    visited.insert(distances[source]);
     
-    while (visited.data.length > 0) {
+    while (visited.length > 0) {
         const smallestEdgeNotVisited = visited.delete();
 
         const node = arr[smallestEdgeNotVisited];
@@ -71,8 +78,8 @@ function dijkstra_listv2(
             let edge = node[index];
             let dist = distances[smallestEdgeNotVisited] + edge.weight;
 
-            visited.insert(edge.to);
             if(dist < distances[edge.to]) {
+                visited.insert(edge.to);
                 previous[edge.to] = smallestEdgeNotVisited;
                 distances[edge.to] = dist;
             }
