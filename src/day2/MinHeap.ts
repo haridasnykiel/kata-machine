@@ -24,7 +24,18 @@ export default class MinHeap<T> {
     }
 
     delete(): T {
+        
+        const rootVal = this.data[0].value;
 
+        const lastNode = this.data[this.length - 1]
+
+        this.data[0] = lastNode;
+
+        this.down(0);
+
+        this.length--;
+
+        return rootVal;
     }
 
     up(idx: number): void {
@@ -64,33 +75,32 @@ export default class MinHeap<T> {
         }
         
         let leftNode: MinHeapNode<T> | null = null;
+
         if(leftIdx < this.length) {
             leftNode = this.data[leftIdx];
         }
-        
+
+        if(rightNode === null && leftNode === null) {
+            return;
+        }
+
         if((rightNode === null || curr.value < rightNode.value) && 
             (leftNode === null || curr.value < leftNode.value)) {
             return;
         }
         
-        if(rightNode === null && leftNode === null) {
-            return;
-        }
-        
-        if(rightNode === null) {
+        rightNode = rightNode as MinHeapNode<T>;
+        leftNode = leftNode as MinHeapNode<T>;
+
+        if((rightNode === null) || (leftNode.value < rightNode.value)) {
             this.data[leftIdx] = curr;
             this.data[idx] = leftNode as MinHeapNode<T>;
             this.down(leftIdx);
-        }
-        
-        if(leftNode === null) {
+        } else if((leftNode === null) || (rightNode.value < leftNode.value)) {
             this.data[rightIdx] = curr;
             this.data[idx] = rightNode as MinHeapNode<T>;
             this.down(rightIdx);
         }
-        
-        rightNode = rightNode as MinHeapNode<T>;
-        leftNode = leftNode as MinHeapNode<T>;
     }
     
     left(idx: number): number {
