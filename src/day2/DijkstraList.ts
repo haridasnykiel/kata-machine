@@ -1,4 +1,5 @@
-import MinHeap from "../day1/MinHeap";
+import MinHeap from "../day2/MinHeap";
+import MinHeapNode from "../day2/MinHeap"
 
 export default function dijkstra_list(
     source: number,
@@ -68,19 +69,21 @@ function dijkstra_listv2(
     const distances: number[] = new Array(arr.length).fill(Infinity);
 
     distances[source] = 0;
-    visited.insert(distances[source]);
+    visited.insert(source, source, distances[source]);
     
     while (visited.length > 0) {
-        const smallestEdgeNotVisited = visited.delete();
+        let smallestEdgeNotVisited = visited.delete();
 
-        const node = arr[smallestEdgeNotVisited];
+        if(smallestEdgeNotVisited === null) break;
+        
+        const node = arr[smallestEdgeNotVisited.to];
         for (let index = 0; index < node.length; index++) {
             let edge = node[index];
-            let dist = distances[smallestEdgeNotVisited] + edge.weight;
+            visited.insert(smallestEdgeNotVisited.from, edge.to, edge.weight);
+            let dist = distances[smallestEdgeNotVisited.to] + edge.weight;
 
             if(dist < distances[edge.to]) {
-                visited.insert(edge.to);
-                previous[edge.to] = smallestEdgeNotVisited;
+                previous[edge.to] = smallestEdgeNotVisited.to;
                 distances[edge.to] = dist;
             }
         }
