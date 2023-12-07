@@ -81,6 +81,8 @@ function dijkstra_listv2(
 
         const node = arr[smallestEdgeNotVisited.to];
 
+        if(distances[smallestEdgeNotVisited.to] < smallestEdgeNotVisited.weight) continue; 
+
         for (let index = 0; index < node.length; index++) {
             let edge = node[index];
             if(visited[edge.to]) continue;
