@@ -1,20 +1,19 @@
-export type MinHeapNode = {
-    from: number,
+export type MinHeapEdge = {
     to: number,
     weight: number,
 }
 
 export default class MinHeap {
     public length: number;
-    private data: MinHeapNode[];
+    private data: MinHeapEdge[];
 
     constructor() {
         this.length = 0;
         this.data = [];
     }
 
-    insert(from: number, to: number, weight: number): void {
-        const node: MinHeapNode = {from: from, to: to, weight: weight};  
+    insert(to: number, weight: number): void {
+        const node: MinHeapEdge = {to: to, weight: weight};  
 
         this.data[this.length] = node;
         
@@ -23,7 +22,7 @@ export default class MinHeap {
         this.length++;
     }
 
-    delete(): MinHeapNode | null {
+    delete(): MinHeapEdge | null {
         
         if(this.length <= 0) {
             return null;
@@ -73,12 +72,12 @@ export default class MinHeap {
         const rightIdx = this.right(idx);
         const leftIdx = this.left(idx);
         
-        let rightNode: MinHeapNode | null = null;
+        let rightNode: MinHeapEdge | null = null;
         if(rightIdx < this.length) {
             rightNode = this.data[rightIdx];
         }
         
-        let leftNode: MinHeapNode | null = null;
+        let leftNode: MinHeapEdge | null = null;
 
         if(leftIdx < this.length) {
             leftNode = this.data[leftIdx];
@@ -93,16 +92,16 @@ export default class MinHeap {
             return;
         }
         
-        rightNode = rightNode as MinHeapNode;
-        leftNode = leftNode as MinHeapNode;
+        rightNode = rightNode as MinHeapEdge;
+        leftNode = leftNode as MinHeapEdge;
 
         if((rightNode === null) || (leftNode.weight < rightNode.weight)) {
             this.data[leftIdx] = curr;
-            this.data[idx] = leftNode as MinHeapNode;
+            this.data[idx] = leftNode as MinHeapEdge;
             this.down(leftIdx);
         } else if((leftNode === null) || (rightNode.weight < leftNode.weight)) {
             this.data[rightIdx] = curr;
-            this.data[idx] = rightNode as MinHeapNode;
+            this.data[idx] = rightNode as MinHeapEdge;
             this.down(rightIdx);
         }
     }
