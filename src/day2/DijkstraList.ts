@@ -58,33 +58,40 @@ function getSmallestDistanceUnvisitedEdge(visited: boolean[], distances: number[
     }
     return smallestEdgeIndex;
 }
-//Need to keep track of the vertices that I have come from and the total weight from that wertice. Have a look at this: https://stackoverflow.com/questions/41965431/dijkstra-algorithm-min-heap-as-a-min-priority-queue
+
 function dijkstra_listv2(
     source: number,
     sink: number,
     arr: WeightedAdjacencyList): number[] {
 
-    const visited: MinHeap = new MinHeap();
+    const pq: MinHeap = new MinHeap();
     const previous: number[] = new Array(arr.length).fill(-1);
     const distances: number[] = new Array(arr.length).fill(Infinity);
+    const visited: boolean[] = new Array(arr.length).fill(false);
 
     distances[source] = 0;
-    visited.insert(source, source, distances[source]);
+    pq.insert(source, distances[source]);
     
-    while (visited.length > 0) {
-        let smallestEdgeNotVisited = visited.delete();
+    while (pq.length > 0) {
+        let smallestEdgeNotVisited = pq.delete();
 
         if(smallestEdgeNotVisited === null) break;
         
+        visited[smallestEdgeNotVisited.to] = true;
+
         const node = arr[smallestEdgeNotVisited.to];
+
+        if(distances[smallestEdgeNotVisited.to] < smallestEdgeNotVisited.weight) continue; 
+
         for (let index = 0; index < node.length; index++) {
             let edge = node[index];
-            visited.insert(smallestEdgeNotVisited.from, edge.to, edge.weight);
+            if(visited[edge.to]) continue;
             let dist = distances[smallestEdgeNotVisited.to] + edge.weight;
 
             if(dist < distances[edge.to]) {
                 previous[edge.to] = smallestEdgeNotVisited.to;
                 distances[edge.to] = dist;
+                pq.insert(edge.to, edge.weight);
             }
         }
     }
