@@ -58,7 +58,7 @@ function getSmallestDistanceUnvisitedEdge(visited: boolean[], distances: number[
     }
     return smallestEdgeIndex;
 }
-//Need to keep track of the vertices that I have come from and the total weight from that wertice. Have a look at this: https://stackoverflow.com/questions/41965431/dijkstra-algorithm-min-heap-as-a-min-priority-queue
+
 function dijkstra_listv2(
     source: number,
     sink: number,
