@@ -25,10 +25,10 @@ export default class LRU<K, V> {
         
         const doesNodeExist = this.lookup.has(key);
         
-        if(!doesNodeExist) {
+        if(!doesNodeExist && this.tail) {
             if(this.length + 1 > this.capacity) {
-                const item = this.reverseLookup.entries().next();
-                this.lookup.delete(item.value.key);
+                const keyOfLastItem = this.reverseLookup.get(this.tail) as K;
+                this.lookup.delete(keyOfLastItem);
                 this.length--;
             }
         }
@@ -40,9 +40,13 @@ export default class LRU<K, V> {
             this.head.prev = node;
             this.head = node;
         }
+    
+        if(!this.tail) {
+            this.tail = node;
+        }    
         
         this.lookup.set(key, node);
-        this.head = node;
+        this.reverseLookup.set(node, key);
         this.length++;
     }
     
