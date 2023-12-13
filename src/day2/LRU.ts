@@ -29,21 +29,18 @@ export default class LRU<K, V> {
             if(this.length + 1 > this.capacity) {
                 const keyOfLastItem = this.reverseLookup.get(this.tail) as K;
                 this.lookup.delete(keyOfLastItem);
+                this.reverseLookup.delete(this.tail);
                 this.length--;
             }
         }
         
         let node: LruNode<V> = { next: this.head, prev: undefined, value: value} 
         if(!this.head) {
-            this.head = node;
+            this.head = this.tail = node;
         } else {
             this.head.prev = node;
             this.head = node;
         }
-    
-        if(!this.tail) {
-            this.tail = node;
-        }    
         
         this.lookup.set(key, node);
         this.reverseLookup.set(node, key);
@@ -74,4 +71,5 @@ export default class LRU<K, V> {
         this.head = node;
         return node.value;
     }
+    // need to detach the node.
 }
