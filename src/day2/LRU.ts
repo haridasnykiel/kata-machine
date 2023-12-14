@@ -23,25 +23,16 @@ export default class LRU<K, V> {
     update(key: K, value: V): void {
         if(!key) return;
         
-        const doesNodeExist = this.lookup.has(key);
+        let node = this.lookup.get(key);
         
-        if(!doesNodeExist && this.tail) {
-            if(this.length + 1 > this.capacity) {
-                const keyOfLastItem = this.reverseLookup.get(this.tail) as K;
-                this.lookup.delete(keyOfLastItem);
-                this.reverseLookup.delete(this.tail);
-                this.length--;
-            }
-        }
-        
-        let node: LruNode<V> = { next: this.head, prev: undefined, value: value} 
-        if(!this.head) {
-            this.head = this.tail = node;
+        if(!node) {
+            node = { next: this.head, prev: undefined, value: value}
+            this.trimLookups()
         } else {
-            this.head.prev = node;
-            this.head = node;
+            this.detachNode(node);
         }
-        
+
+        this.prependNode(node);
         this.lookup.set(key, node);
         this.reverseLookup.set(node, key);
         this.length++;
@@ -56,20 +47,46 @@ export default class LRU<K, V> {
         
         if(node === this.head) return node.value;
         
-        if(node === this.tail) {
-            this.head.prev = node;
-            this.head = node;
-            this.tail = this.tail.prev;
-        }
+        this.detachNode(node);
+        this.prependNode(node);
         
-        if(!node.prev || !node.next) return undefined;
-        
-        node.prev.next = node.next;
-        node.next.prev = node.prev;
-
-        this.head.prev = node;
-        this.head = node;
         return node.value;
     }
     // need to detach the node.
+    detachNode(node: LruNode<V>) {
+        if(!node) return;
+        
+        if(node.next) {
+            node.next.prev = node.prev;
+        }
+        
+        if(node.prev) {
+            node.prev.next = node.next;
+        }
+        
+        node.next = undefined;
+        node.prev = undefined;
+    }
+    
+    prependNode(node: LruNode<V>) {
+        if(!this.head) {
+            this.head = this.tail = node;
+        } else {
+            this.head.prev = node;
+            node.next = this.head;
+            node.prev = undefined;
+            this.head = node;
+        }
+    }
+    trimLookups() {
+        if (this.tail && this.length + 1 > this.capacity) {
+            const keyOfLastItem = this.reverseLookup.get(this.tail) as K;
+            this.lookup.delete(keyOfLastItem);
+            this.reverseLookup.delete(this.tail);
+            const newTail = this.tail.prev;
+            this.detachNode(this.tail);
+            this.tail = newTail;
+            this.length--;
+        }
+    }
 }
