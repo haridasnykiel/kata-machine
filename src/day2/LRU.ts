@@ -21,12 +21,12 @@ export default class LRU<K, V> {
     }
 
     update(key: K, value: V): void {
-        if(!key) return;
-        
+        if (!key) return;
+
         let node = this.lookup.get(key);
-        
-        if(!node) {
-            node = { next: this.head, prev: undefined, value: value}
+
+        if (!node) {
+            node = { next: this.head, prev: undefined, value: value }
             this.trimLookups()
         } else {
             this.detachNode(node);
@@ -37,39 +37,43 @@ export default class LRU<K, V> {
         this.reverseLookup.set(node, key);
         this.length++;
     }
-    
+
     get(key: K): V | undefined {
-        if(!key) return undefined;
-        
-        const node = this.lookup.get(key); 
-        
-        if(!node || !this.head) return undefined;
-        
-        if(node === this.head) return node.value;
-        
+        if (!key) return undefined;
+
+        const node = this.lookup.get(key);
+
+        if (!node || !this.head) return undefined;
+
+        if (node === this.head) return node.value;
+
         this.detachNode(node);
         this.prependNode(node);
-        
+
         return node.value;
     }
     // need to detach the node.
     detachNode(node: LruNode<V>) {
-        if(!node) return;
-        
-        if(node.next) {
+        if (!node) return;
+
+        if (node.next) {
             node.next.prev = node.prev;
         }
-        
-        if(node.prev) {
+
+        if (node.prev) {
             node.prev.next = node.next;
         }
-        
+
+        if(node === this.tail) {
+            this.tail = node.prev;
+        }
+
         node.next = undefined;
         node.prev = undefined;
     }
-    
+
     prependNode(node: LruNode<V>) {
-        if(!this.head) {
+        if (!this.head) {
             this.head = this.tail = node;
         } else {
             this.head.prev = node;
@@ -78,15 +82,19 @@ export default class LRU<K, V> {
             this.head = node;
         }
     }
+
     trimLookups() {
-        if (this.tail && this.length + 1 > this.capacity) {
-            const keyOfLastItem = this.reverseLookup.get(this.tail) as K;
-            this.lookup.delete(keyOfLastItem);
-            this.reverseLookup.delete(this.tail);
-            const newTail = this.tail.prev;
-            this.detachNode(this.tail);
-            this.tail = newTail;
-            this.length--;
+        if (this.length < this.capacity) {
+            return;
         }
+
+        this.tail = this.tail as LruNode<V>;
+        const keyOfLastItem = this.reverseLookup.get(this.tail) as K;
+        this.lookup.delete(keyOfLastItem);
+        this.reverseLookup.delete(this.tail);
+        const newTail = this.tail.prev;
+        this.detachNode(this.tail);
+        this.tail = newTail;
+        this.length--;
     }
 }
